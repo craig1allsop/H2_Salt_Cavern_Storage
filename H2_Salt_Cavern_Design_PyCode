@@ -1,5 +1,5 @@
 @author: craigallsop
-Reference: https://github.com/craig1allsop/H2_Salt_Cavern_Storage_Calculator.git
+Reference: https://github.com/craig1allsop/H2_Salt_Cavern_Storage.git
 #TO DO: input cavern dimentions (radius, height, depth), number of caverns, and adjust aspect ratio of subplot accordingly.
 """
 
