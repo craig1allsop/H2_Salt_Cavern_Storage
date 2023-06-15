@@ -6,7 +6,7 @@ H2 compressibility can alternatively be calculated using the H2_Compressibility_
 
 The selected salt cavern geomechanical and spatial design can then be visialised using the Salt_Cavern_Design_PyCode provided.
 
-Source: https://github.com/craig1allsop/H2_Salt_Cavern_Storage_Calculator.git
+Source: https://github.com/craig1allsop/H2_Salt_Cavern_Storage.git
 
 
 
