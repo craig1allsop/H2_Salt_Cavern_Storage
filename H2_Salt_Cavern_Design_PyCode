@@ -1,0 +1,121 @@
+@author: craigallsop
+Reference: https://github.com/craig1allsop/H2_Salt_Cavern_Storage_Calculator.git
+#TO DO: input cavern dimentions (radius, height, depth), number of caverns, and adjust aspect ratio of subplot accordingly.
+"""
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+class SaltCavern:
+    def __init__(self, name, coordinates, radius, height):
+        self.name = name
+        self.coordinates = coordinates
+        self.radius = radius
+        self.height = height
+
+
+def create_salt_cavern():
+    name = "Cavern A"
+    coordinates = "0, 0, -375" # Z = cavern mid-height
+    coordinates = tuple(map(float, coordinates.split(',')))  # Convert coordinates to tuple of floats
+    radius = 35
+    height = 40
+    return SaltCavern(name, coordinates, radius, height)
+
+
+def generate_capsule_mesh(x, y, z, radius, height, num_points=100):
+    phi = np.linspace(0, 2 * np.pi, num_points)
+    theta = np.linspace(-np.pi / 2, np.pi / 2, num_points)
+    phi, theta = np.meshgrid(phi, theta)
+
+    x_mesh = x + radius * np.cos(phi) * np.cos(theta)
+    y_mesh = y + radius * np.sin(phi) * np.cos(theta)
+    z_mesh = z + height * np.sin(theta)
+
+    return x_mesh, y_mesh, z_mesh
+
+
+def main():
+    salt_caverns = []
+
+    num_rows = 3
+    num_cols = 1
+
+    for row in range(num_rows):
+        for col in range(num_cols):
+            salt_cavern = create_salt_cavern()
+            # Add offsets to the X and Y coordinates based on the row and column indices
+            x_offset = 4 * (salt_cavern.radius * 2) * col
+            y_offset = 4 * (salt_cavern.radius * 2) * row
+            salt_cavern.coordinates = (
+                salt_cavern.coordinates[0] + x_offset,
+                salt_cavern.coordinates[1] + y_offset,
+                salt_cavern.coordinates[2]
+            )
+            salt_caverns.append(salt_cavern)
+
+    # Create a 3D figure 
+    fig = plt.figure(figsize=(12, 8), dpi=1200)
+    ax = fig.add_subplot(111, projection='3d')
+
+    # Remove the grid lines
+    ax.grid(False)
+
+    # Set the color of the X and Y coordinate grid planes to white
+    ax.xaxis.pane.fill = False
+    ax.yaxis.pane.fill = False
+    ax.zaxis.pane.fill = False
+    ax.xaxis.pane.edgecolor = 'black'
+    ax.yaxis.pane.edgecolor = 'black'
+    ax.zaxis.pane.edgecolor = 'grey'
+    ax.xaxis.pane.set_edgecolor('black')
+    ax.yaxis.pane.set_edgecolor('black')
+    ax.zaxis.pane.set_edgecolor('grey')
+
+    # Plot each salt cavern with a vertical borehole connected to the top of the cavern
+    for cavern in salt_caverns:
+        x, y, z = cavern.coordinates
+        radius = cavern.radius
+        height = cavern.height
+
+        # Generate the capsule-shaped mesh
+        x_mesh, y_mesh, z_mesh = generate_capsule_mesh(x, y, z, radius, height)
+
+        # Plot the mesh
+        ax.plot_surface(x_mesh, y_mesh, z_mesh, color='cyan', alpha=0.5, antialiased=True)
+
+    # Calculate the volume of the cavern
+    volume = (np.pi * (4/3) * cavern.radius * cavern.radius * (cavern.height/2)) * 0.7 # ellipsoid
+
+    # Format the volume as a string
+    volume_str = f"Vcav: {int(round(volume))} m^3"
+
+    # Add a text annotation for the volume
+    ax.text(x, y, z + cavern.height / .1, volume_str, fontsize=10, color='red', ha='center', va='bottom')
+
+    # Add borehole lines connected to the top of each cavern
+    for cavern in salt_caverns:
+        x, y, z = cavern.coordinates
+        height = cavern.height
+
+        # Add borehole from the top of the cavern to z=0 plane
+        ax.plot([x], [y], [z + height], 'ko', markersize=2)  # Top of the cavern
+        ax.plot([x, x], [y, y], [z + height, 0], color='black', linewidth=0.5)  # Line to z=0 plane
+
+    # Set aspect ratio
+    ax.set_box_aspect([1, 2, 2])
+
+    # Set labels and display the figure
+    ax.set_xlabel("[m]", fontsize=10)
+    ax.set_ylabel("[m]", fontsize=10)
+    ax.set_zlabel("Depth [m]", fontsize=10)
+    ax.set_title('Salt Cavern Design', fontsize=12)
+    ax.tick_params(axis='both', which='major', labelsize=10)
+    ax.view_init(elev=30, azim=30)
+    ax.text(0, 700, 100, "Surface Level", fontsize=10, color='black', ha='right', va='bottom')
+
+    plt.show()
+
+
+if __name__ == "__main__":
+    main()
