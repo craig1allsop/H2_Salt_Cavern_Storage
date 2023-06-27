@@ -4,7 +4,7 @@ Storage potential is thermodynamically derived, with respect to geomechanical an
 
 H2 compressibility can alternatively be calculated using the H2_Compressibility_Factor_PyCode provided, which uses the Peng-Robinson Equation of State (EOS). 
 
-The selected salt cavern geomechanical and spatial design can then be visialised using the Salt_Cavern_Design_PyCode provided.
+The selected salt cavern geomechanical and spatial design can then be visualised using the Salt_Cavern_Design_PyCode provided.
 
 Source: https://github.com/craig1allsop/H2_Salt_Cavern_Storage.git
 
